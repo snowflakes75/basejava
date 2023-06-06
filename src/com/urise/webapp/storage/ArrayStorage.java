@@ -8,7 +8,9 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
+
+    private static final int STORAGE_LIMIT = 10000;
+    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     private int size;
 
     private int findIndex(String uuid) {
@@ -26,7 +28,10 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (findIndex(r.getUuid()) != -1) {
+        int index = findIndex(r.getUuid());
+        if (storage.length <= size) {
+            System.out.println("Storage overflow. Can`t save resume: " + r.getUuid());
+        } else if (index != -1) {
             System.out.println("Resume already saved: " + r.getUuid());
         } else {
             storage[size++] = r;
@@ -55,7 +60,8 @@ public class ArrayStorage {
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            System.arraycopy(storage, index + 1, storage, index, size - index - 1);
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
             size--;
         } else {
             System.out.println("Resume already delete: " + uuid);
