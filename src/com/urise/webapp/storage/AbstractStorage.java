@@ -6,52 +6,35 @@ import com.urise.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
+    @Override
     public void update(Resume r) {
-        Object searchKey = getIndex(r.getUuid());
-        if (!isExists(searchKey)) {
-            getNotExistingSearchKey(r.getUuid());
-        } else {
-            updateElements(searchKey, r);
-        }
+        String uuid = r.getUuid();
+        Object searchKey = getIndex(uuid);
+        getNotExistingSearchKey(uuid, searchKey);
+        updateElements(searchKey, r);
     }
 
+    @Override
     public void save(Resume r) {
         Object searchKey = getIndex(r.getUuid());
-        if (isExists(searchKey)) {
-            getExistingSearchKey(r.getUuid());
-        } else {
-            insertElementByIndex(r, searchKey);
-        }
+        getExistingSearchKey(r, searchKey);
     }
 
     @Override
     public void delete(String uuid) {
         Object searchKey = getIndex(uuid);
-        if (!isExists(searchKey)) {
-            getNotExistingSearchKey(uuid);
-        } else {
-            deletedElementByIndex(searchKey);
-        }
-    }
-
-    protected abstract boolean isExists(Object object);
-
-    private void getExistingSearchKey(String uuid) {
-        throw new ExistStorageException(uuid);
-    }
-
-    private void getNotExistingSearchKey(String uuid) {
-        throw new NotExistStorageException(uuid);
+        getNotExistingSearchKey(uuid, searchKey);
+        deletedElementByIndex(searchKey);
     }
 
     @Override
     public Resume get(String uuid) {
         Object searchKey = getIndex(uuid);
-        if (!isExists(searchKey)) {
-            getNotExistingSearchKey(uuid);
-        }
+        getNotExistingSearchKey(uuid, searchKey);
         return getElementStorage(searchKey);
     }
+
+    protected abstract boolean isExists(Object object);
 
     protected abstract Object getIndex(String uuid);
 
@@ -63,4 +46,17 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deletedElementByIndex(Object searchKey);
 
+    private void getNotExistingSearchKey(String uuid, Object searchKey) {
+        if (!isExists(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+    }
+
+    private void getExistingSearchKey(Resume r, Object searchKey) {
+        if (isExists(searchKey)) {
+            throw new ExistStorageException(r.getUuid());
+        } else {
+            insertElementByIndex(r, searchKey);
+        }
+    }
 }
