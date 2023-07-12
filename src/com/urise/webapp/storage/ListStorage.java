@@ -25,7 +25,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getIndex(String uuid) {
+    protected boolean isExists(Object index) {
+        return (int) index >= 0;
+    }
+
+    @Override
+    protected Object getIndex(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
