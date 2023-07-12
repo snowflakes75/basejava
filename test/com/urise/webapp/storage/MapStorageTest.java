@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static java.util.Arrays.sort;
 import static org.junit.Assert.*;
 
 public class MapStorageTest {

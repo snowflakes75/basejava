@@ -8,29 +8,25 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        String uuid = r.getUuid();
-        Object searchKey = getIndex(uuid);
-        getNotExistingSearchKey(uuid, searchKey);
+        Object searchKey = getNotExistingSearchKey(r.getUuid());
         updateElements(searchKey, r);
     }
 
     @Override
     public void save(Resume r) {
-        Object searchKey = getIndex(r.getUuid());
-        getExistingSearchKey(r, searchKey);
+        Object searchKey = getExistingSearchKey(r);
+        insertElementByIndex(r, searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        Object searchKey = getIndex(uuid);
-        getNotExistingSearchKey(uuid, searchKey);
+        Object searchKey = getNotExistingSearchKey(uuid);
         deletedElementByIndex(searchKey);
     }
 
     @Override
     public Resume get(String uuid) {
-        Object searchKey = getIndex(uuid);
-        getNotExistingSearchKey(uuid, searchKey);
+        Object searchKey = getNotExistingSearchKey(uuid);
         return getElementStorage(searchKey);
     }
 
@@ -46,17 +42,19 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deletedElementByIndex(Object searchKey);
 
-    private void getNotExistingSearchKey(String uuid, Object searchKey) {
+    private Object getExistingSearchKey(Resume r) {
+        Object searchKey = getIndex(r.getUuid());
+        if (isExists(searchKey)) {
+            throw new ExistStorageException(r.getUuid());
+        }
+        return searchKey;
+    }
+
+    private Object getNotExistingSearchKey(String uuid) {
+        Object searchKey = getIndex(uuid);
         if (!isExists(searchKey)) {
             throw new NotExistStorageException(uuid);
         }
-    }
-
-    private void getExistingSearchKey(Resume r, Object searchKey) {
-        if (isExists(searchKey)) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            insertElementByIndex(r, searchKey);
-        }
+        return searchKey;
     }
 }
