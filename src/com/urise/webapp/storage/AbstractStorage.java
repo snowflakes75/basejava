@@ -7,30 +7,30 @@ import com.urise.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void update(Resume r) {
-        Object index = getIndex(r.getUuid());
-        if (!isExists(index)) {
+        Object searchKey = getIndex(r.getUuid());
+        if (!isExists(searchKey)) {
             getNotExistingSearchKey(r.getUuid());
         } else {
-            updateElements((Integer) index, r);
+            updateElements(searchKey, r);
         }
     }
 
     public void save(Resume r) {
-        Object index = getIndex(r.getUuid());
-        if (isExists(index)) {
+        Object searchKey = getIndex(r.getUuid());
+        if (isExists(searchKey)) {
             getExistingSearchKey(r.getUuid());
         } else {
-            insertElementByIndex(r, (Integer) index);
+            insertElementByIndex(r, searchKey);
         }
     }
 
     @Override
     public void delete(String uuid) {
-        Object index = getIndex(uuid);
-        if (!isExists(index)) {
+        Object searchKey = getIndex(uuid);
+        if (!isExists(searchKey)) {
             getNotExistingSearchKey(uuid);
         } else {
-            deletedElementByIndex((Integer) index);
+            deletedElementByIndex(searchKey);
         }
     }
 
@@ -46,21 +46,21 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        Object index = getIndex(uuid);
-        if (!isExists(index)) {
+        Object searchKey = getIndex(uuid);
+        if (!isExists(searchKey)) {
             getNotExistingSearchKey(uuid);
         }
-        return getElementStorage((Integer) index);
+        return getElementStorage(searchKey);
     }
 
     protected abstract Object getIndex(String uuid);
 
-    protected abstract void updateElements(int index, Resume r);
+    protected abstract void updateElements(Object searchKey, Resume r);
 
-    protected abstract void insertElementByIndex(Resume r, int index);
+    protected abstract void insertElementByIndex(Resume r, Object searchKey);
 
-    protected abstract Resume getElementStorage(int index);
+    protected abstract Resume getElementStorage(Object searchKey);
 
-    protected abstract void deletedElementByIndex(int index);
+    protected abstract void deletedElementByIndex(Object searchKey);
 
 }
