@@ -2,26 +2,39 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import com.urise.webapp.model.Resume;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
-public class MapStorageTest {
-    private final Storage storage = new MapStorage();
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class AbstractStorageTest {
+    protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
 
-    private static final Resume RESUME_1 = new Resume(UUID_1);
-    private static final Resume RESUME_2 = new Resume(UUID_2);
-    private static final Resume RESUME_3 = new Resume(UUID_3);
-    private static final Resume RESUME_4 = new Resume(UUID_4);
+    private static final Resume RESUME_1;
+    private static final Resume RESUME_2;
+    private static final Resume RESUME_3;
+    private static final Resume RESUME_4;
+
+    static {
+        RESUME_1 = new Resume(UUID_1, "Bob Snow");
+        RESUME_2 = new Resume(UUID_2, "Bob Snow");
+        RESUME_3 = new Resume(UUID_3, "Bob Snow");
+        RESUME_4 = new Resume(UUID_4, "Bob Snow");
+    }
+
+    public AbstractStorageTest(Storage storage) {
+        this.storage = storage;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -56,10 +69,11 @@ public class MapStorageTest {
 
     @Test
     public void getAll() throws Exception {
-        Resume[] array = storage.getAll();
-        Arrays.sort(array);
-        assertEquals(3, array.length);
-        assertArrayEquals(new Resume[]{RESUME_1, RESUME_2, RESUME_3}, array);
+        List<Resume> array = storage.getAllSorted();
+        assertEquals(3, array.size());
+        assertEquals(RESUME_1, array.get(0));
+        assertEquals(RESUME_2, array.get(1));
+        assertEquals(RESUME_3, array.get(2));
     }
 
     @Test
@@ -74,7 +88,6 @@ public class MapStorageTest {
         storage.save(RESUME_1);
     }
 
-
     @Test(expected = NotExistStorageException.class)
     public void delete() throws Exception {
         storage.delete(UUID_1);
@@ -86,7 +99,6 @@ public class MapStorageTest {
     public void deleteNotExist() throws Exception {
         storage.delete("dummy");
     }
-
 
     @Test
     public void get() throws Exception {

@@ -6,44 +6,45 @@ import com.urise.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
+    protected abstract boolean isExists(Object object);
+
+    protected abstract Object getSearchKey(String uuid);
+
+    protected abstract void doUpdate(Object searchKey, Resume r);
+
+    protected abstract void doSave(Resume r, Object searchKey);
+
+    protected abstract Resume doGet(Object searchKey);
+
+    protected abstract void doDelete(Object searchKey);
+
     @Override
     public void update(Resume r) {
         Object searchKey = getNotExistingSearchKey(r.getUuid());
-        updateElements(searchKey, r);
+        doUpdate(searchKey, r);
     }
 
     @Override
     public void save(Resume r) {
         Object searchKey = getExistingSearchKey(r);
-        insertElementByIndex(r, searchKey);
+        doSave(r, searchKey);
     }
 
     @Override
     public void delete(String uuid) {
         Object searchKey = getNotExistingSearchKey(uuid);
-        deletedElementByIndex(searchKey);
+        doDelete(searchKey);
     }
 
     @Override
     public Resume get(String uuid) {
         Object searchKey = getNotExistingSearchKey(uuid);
-        return getElementStorage(searchKey);
+        return doGet(searchKey);
     }
 
-    protected abstract boolean isExists(Object object);
-
-    protected abstract Object getIndex(String uuid);
-
-    protected abstract void updateElements(Object searchKey, Resume r);
-
-    protected abstract void insertElementByIndex(Resume r, Object searchKey);
-
-    protected abstract Resume getElementStorage(Object searchKey);
-
-    protected abstract void deletedElementByIndex(Object searchKey);
 
     private Object getExistingSearchKey(Resume r) {
-        Object searchKey = getIndex(r.getUuid());
+        Object searchKey = getSearchKey(r.getUuid());
         if (isExists(searchKey)) {
             throw new ExistStorageException(r.getUuid());
         }
@@ -51,7 +52,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     private Object getNotExistingSearchKey(String uuid) {
-        Object searchKey = getIndex(uuid);
+        Object searchKey = getSearchKey(uuid);
         if (!isExists(searchKey)) {
             throw new NotExistStorageException(uuid);
         }

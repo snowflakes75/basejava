@@ -1,11 +1,14 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.util.ResumeComparator;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage {
     private final Map<String, Resume> storage = new HashMap<>();
     @Override
     public void clear() {
@@ -13,8 +16,10 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[storage.size()]);
+    public List<Resume> getAllSorted() {
+        List<Resume> list = Arrays.asList(storage.values().toArray(new Resume[0]));
+        list.sort(ResumeComparator.resumeComparator);
+        return list;
     }
 
     @Override
@@ -24,31 +29,31 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected boolean isExists(Object object) {
-        return storage.containsKey(object);
+        return storage.containsKey((String) object);
     }
 
     @Override
-    protected Object getIndex(String uuid) {
+    protected String getSearchKey(String uuid) {
         return uuid;
     }
 
     @Override
-    protected void updateElements(Object searchKey, Resume r) {
+    protected void doUpdate(Object searchKey, Resume r) {
         storage.put((String) searchKey, r);
     }
 
     @Override
-    protected void insertElementByIndex(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Object searchKey) {
         storage.put((String) searchKey, r);
     }
 
     @Override
-    protected Resume getElementStorage(Object searchKey) {
+    protected Resume doGet(Object searchKey) {
         return storage.get((String) searchKey);
     }
 
     @Override
-    protected void deletedElementByIndex(Object searchKey) {
+    protected void doDelete(Object searchKey) {
         storage.remove((String) searchKey);
     }
 }

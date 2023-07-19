@@ -4,6 +4,7 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
 
@@ -11,9 +12,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size = 0;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
 
+    protected abstract void fillDeletedElement(int index);
+
+    protected abstract void insertElement(Resume r, int index);
+
     @Override
     protected boolean isExists(Object index) {
-        return (int) index >= 0;
+        return (Integer) index >= 0;
     }
 
     @Override
@@ -23,7 +28,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void insertElementByIndex(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Object searchKey) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", r.getUuid());
         } else {
@@ -36,8 +41,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    public List<Resume> getAllSorted() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
     @Override
@@ -46,23 +51,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElements(Object searchKey, Resume r) {
+    protected void doUpdate(Object searchKey, Resume r) {
         storage[(int) searchKey] = r;
     }
 
     @Override
-    protected void deletedElementByIndex(Object searchKey) {
+    protected void doDelete(Object searchKey) {
         fillDeletedElement((Integer) searchKey);
         storage[size - 1] = null;
         size--;
     }
-
-    protected abstract void fillDeletedElement(int index);
-
-    protected abstract void insertElement(Resume r, int index);
-
     @Override
-    protected Resume getElementStorage(Object searchKey) {
+    protected Resume doGet(Object searchKey) {
         return storage[(int) searchKey];
     }
 }
