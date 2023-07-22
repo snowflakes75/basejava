@@ -1,7 +1,6 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.util.ResumeComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        storage.sort(ResumeComparator.resumeComparator);
+    protected List<Resume> getAllElements() {
         return storage;
     }
 

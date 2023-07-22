@@ -1,7 +1,6 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.util.ResumeComparator;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,12 +17,7 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected Resume getSearchKey(String uuid) {
-        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
-            if (entry.getValue().getUuid().equals(uuid)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return storage.get(uuid);
     }
 
     @Override
@@ -47,15 +41,13 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    public void clear() {
-        storage.clear();
+    protected List<Resume> getAllElements() {
+        return Arrays.asList(storage.values().toArray(new Resume[0]));
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> list = Arrays.asList(storage.values().toArray(new Resume[0]));
-        list.sort(ResumeComparator.resumeComparator);
-        return list;
+    public void clear() {
+        storage.clear();
     }
 
     @Override
