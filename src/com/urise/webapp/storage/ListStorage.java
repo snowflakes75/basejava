@@ -5,7 +5,7 @@ import com.urise.webapp.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     private final List<Resume> storage = new ArrayList<>();
 
@@ -15,8 +15,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[size()]);
+    protected List<Resume> getAllElements() {
+        return storage;
     }
 
     @Override
@@ -25,38 +25,38 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExists(Object index) {
-        return (int) index >= 0;
+    protected boolean isExists(Integer searchKey) {
+        return searchKey != null;
     }
 
     @Override
-    protected Object getIndex(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).getUuid().equals(uuid)) {
                 return i;
             }
         }
-        return -1;
+        return null;
     }
 
     @Override
-    protected void updateElements(Object searchKey, Resume r) {
+    protected void doUpdate(Integer searchKey, Resume r) {
         storage.set((Integer) searchKey, r);
     }
 
     @Override
-    protected Resume getElementStorage(Object searchKey) {
-        return storage.get((Integer) searchKey);
+    protected Resume doGet(Integer searchKey) {
+        return storage.get(searchKey);
     }
 
     @Override
-    protected void insertElementByIndex(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Integer searchKey) {
         storage.add(r);
     }
 
     @Override
-    protected void deletedElementByIndex(Object searchKey) {
-        storage.remove((int) searchKey);
+    protected void doDelete(Integer searchKey) {
+        storage.remove(searchKey.intValue());
     }
 
 }

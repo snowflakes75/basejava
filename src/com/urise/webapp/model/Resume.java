@@ -1,5 +1,8 @@
 package com.urise.webapp.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -10,16 +13,51 @@ public class Resume implements Comparable<Resume> {
     // Unique identifier
     private final String uuid;
 
-    public Resume() {
-        this(UUID.randomUUID().toString());
+    private String fullName;
+
+    private Map<ContactType, String> contacts;
+
+    private Map<SectionType, Section> sections;
+
+    public Resume(String fullName) {
+        this(UUID.randomUUID().toString(), fullName);
     }
 
-    public Resume(String uuid) {
+    public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
+        this.fullName = fullName;
+        this.contacts = new HashMap<>();
+        this.sections = new HashMap<>();
+    }
+
+    public void setContacts(ContactType type, String contact) {
+        contacts.put(type, contact);
+    }
+
+    public String getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public void setSection(SectionType type, Section section) {
+        sections.put(type, section);
+    }
+
+    public Section getSection(SectionType type) {
+        return sections.get(type);
     }
 
     public String getUuid() {
         return uuid;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     @Override
@@ -29,21 +67,25 @@ public class Resume implements Comparable<Resume> {
 
         Resume resume = (Resume) o;
 
-        return uuid.equals(resume.uuid);
+        if (!uuid.equals(resume.uuid)) return false;
+        return fullName.equals(resume.fullName);
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return uuid;
+        return uuid + '(' + fullName + ')';
     }
 
     @Override
     public int compareTo(Resume o) {
-        return uuid.compareTo(o.uuid);
+        int cmp = fullName.compareTo(o.fullName);
+        return cmp != 0 ? cmp : uuid.compareTo(o.uuid);
     }
 }

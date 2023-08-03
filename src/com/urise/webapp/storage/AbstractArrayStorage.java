@@ -4,16 +4,21 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected static final int STORAGE_LIMIT = 10_000;
     protected int size = 0;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
 
+    protected abstract void fillDeletedElement(int index);
+
+    protected abstract void insertElement(Resume r, int index);
+
     @Override
-    protected boolean isExists(Object index) {
-        return (int) index >= 0;
+    protected boolean isExists(Integer index) {
+        return index >= 0;
     }
 
     @Override
@@ -23,21 +28,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void insertElementByIndex(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Integer searchKey) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", r.getUuid());
         } else {
-            insertElement(r, (Integer) searchKey);
+            insertElement(r, searchKey);
             size++;
         }
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    protected List<Resume> getAllElements() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
     @Override
@@ -46,23 +48,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElements(Object searchKey, Resume r) {
-        storage[(int) searchKey] = r;
+    protected void doUpdate(Integer searchKey, Resume r) {
+        storage[searchKey] = r;
     }
 
     @Override
-    protected void deletedElementByIndex(Object searchKey) {
-        fillDeletedElement((Integer) searchKey);
+    protected void doDelete(Integer searchKey) {
+        fillDeletedElement(searchKey);
         storage[size - 1] = null;
         size--;
     }
-
-    protected abstract void fillDeletedElement(int index);
-
-    protected abstract void insertElement(Resume r, int index);
-
     @Override
-    protected Resume getElementStorage(Object searchKey) {
-        return storage[(int) searchKey];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 }
