@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Organization {
-    List<Period> periods = new ArrayList<>();
-    String name;
-    String url;
+    private final Link homePage;
+    private final List<Period> periods = new ArrayList<>();
 
     public Organization(String name) {
         this(name, "");
     }
 
     public Organization(String name, String url) {
-        this.name = name;
-        this.url = url;
+        this.homePage = new Link(name, url);
     }
 
     public void addPeriod(Period period) {
@@ -23,9 +21,7 @@ public class Organization {
 
     @Override
     public String toString() {
-        return name
-                + "\n"
-                + url
+        return homePage.toString()
                 + "\n"
                 + periods.toString();
     }

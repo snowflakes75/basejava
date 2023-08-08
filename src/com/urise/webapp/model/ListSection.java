@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListSection extends Section<String> {
-    List<String> textList = new ArrayList<>();
+    private final List<String> textList = new ArrayList<>();
 
     @Override
     public void addContent(String content) {
