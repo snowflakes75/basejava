@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public abstract class AbstractFileStorage<T> extends AbstractStorage<File> {
 
-    private File directory;
+    private final File directory;
     protected T stream;
 
     protected AbstractFileStorage(File directory) {
@@ -23,6 +23,12 @@ public abstract class AbstractFileStorage<T> extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
+    }
+
+    private void checkDirectoryAccess(File[] files, String message) {
+        if (Objects.isNull(files)) {
+            throw new StorageException(message, directory.getName());
+        }
     }
 
     @Override
@@ -37,7 +43,7 @@ public abstract class AbstractFileStorage<T> extends AbstractStorage<File> {
 
     @Override
     protected void doUpdate(File file, Resume r) {
-        file.deleteOnExit();
+        doDelete(file);
         doSave(r, file);
     }
 
@@ -51,26 +57,24 @@ public abstract class AbstractFileStorage<T> extends AbstractStorage<File> {
         }
     }
 
-    protected abstract void doWrite(Resume r, File file);
-
     @Override
     protected Resume doGet(File file) {
         return doRead(file, stream);
     }
 
-    protected abstract Resume doRead(File file, T stream);
-
     @Override
     protected void doDelete(File file) {
-        file.delete();
+        boolean delete = file.delete();
+        if (delete) throw new StorageException("Can`t delete file", file.getName());
     }
 
     @Override
     protected List<Resume> getAllElements() {
         File[] files = directory.listFiles();
+        checkDirectoryAccess(files, "Can`t find files in directory");
         List<Resume> resumeList = new ArrayList<>();
         for (File file : files) {
-            resumeList.add(doRead(file, stream));
+            resumeList.add(doGet(file));
         }
         return resumeList;
     }
@@ -78,13 +82,20 @@ public abstract class AbstractFileStorage<T> extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] files = directory.listFiles();
+        checkDirectoryAccess(files, "Can`t clear directory");
         for (File file : files) {
-            file.delete();
+            doDelete(file);
         }
     }
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.listFiles()).length;
+        File[] files = directory.listFiles();
+        checkDirectoryAccess(files, "Can`t count files in directory");
+        return files.length;
     }
+
+    protected abstract void doWrite(Resume r, File file);
+
+    protected abstract Resume doRead(File file, T stream);
 }
