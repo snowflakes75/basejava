@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OrganizationSection extends Section<Organization> {
+    private static final long serialVersionUID = 1L;
     private final List<Organization> organizations = new ArrayList<>();
 
     @Override

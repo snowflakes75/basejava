@@ -3,8 +3,6 @@ package com.urise.webapp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class MainFile {
     public static void main(String[] args) {
@@ -39,7 +37,7 @@ public class MainFile {
 
     public static void showContentDirectory(File dir, String symbol) {
         if (dir.isDirectory()) {
-            System.out.println(symbol + dir.getName());
+            System.out.println(symbol + "D: " + dir.getName());
             File[] files = dir.listFiles();
             if (files != null) {
                 for (File file: files) {
@@ -47,7 +45,7 @@ public class MainFile {
                 }
             }
         } else {
-            System.out.println(symbol + "\t" + dir.getName());
+            System.out.println(symbol + "F: " + "\t" + dir.getName());
         }
     }
 }
