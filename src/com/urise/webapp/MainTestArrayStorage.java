@@ -2,7 +2,7 @@ package com.urise.webapp;
 
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.storage.ArrayStorage;
-import com.urise.webapp.storage.Storage;
+import com.urise.webapp.storage.serialization.Storage;
 
 /**
  * Test for your com.urise.webapp.storage.ArrayStorage implementation

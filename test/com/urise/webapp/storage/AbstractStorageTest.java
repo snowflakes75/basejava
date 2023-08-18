@@ -3,12 +3,12 @@ package com.urise.webapp.storage;
 import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.storage.serialization.Storage;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.urise.webapp.model.Resume;
 
-import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
