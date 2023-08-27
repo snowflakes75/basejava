@@ -3,6 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.storage.serialization.Storage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AbstractStorageTest {
+
+    protected static final String STORAGE_DIR = "C:\\Users\\Mikle\\Documents\\projects\\basejava\\storage";
+
     protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -65,7 +69,7 @@ public class AbstractStorageTest {
     public void update() throws Exception {
         Resume newResume = new Resume(UUID_1, "New Name");
         storage.update(newResume);
-        assertTrue(newResume == storage.get(UUID_1));
+        assertTrue(newResume.equals(storage.get(UUID_1)));
     }
 
     @Test(expected = NotExistStorageException.class)
