@@ -31,6 +31,9 @@ public class TextSection extends Section<String> {
         return 1;
     }
 
+    public String getText() {
+        return text;
+    }
 
     @Override
     public boolean equals(Object o) {

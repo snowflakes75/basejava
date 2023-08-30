@@ -26,24 +26,28 @@ public class DataStreamSerializer implements Serialization {
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
                 SectionType sectionType = entry.getKey();
                 dos.writeUTF(sectionType.name());
-                int size = entry.getValue().size();
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(entry.getValue().toString());
+                        TextSection textSection = (TextSection) entry.getValue();
+                        dos.writeUTF(textSection.getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        dos.writeInt(size);
-                        for (int i = 0; i < size; i++) {
-                            dos.writeUTF(entry.getValue().getContent(i).toString());
+                        ListSection listSection = (ListSection) entry.getValue();
+                        int listSize = listSection.size();
+                        dos.writeInt(listSize);
+                        for (int i = 0; i < listSize; i++) {
+                            dos.writeUTF(listSection.getContent(i));
                         }
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        dos.writeInt(size);
-                        for (int i = 0; i < size; i++) {
-                            Organization org = (Organization) entry.getValue().getContent(i);
+                        OrganizationSection organizationSection = (OrganizationSection) entry.getValue();
+                        int orgSize = organizationSection.size();
+                        dos.writeInt(orgSize);
+                        for (int i = 0; i < orgSize; i++) {
+                            Organization org = organizationSection.getContent(i);
                             Link homePage = org.getHomePage();
                             dos.writeUTF(homePage.getName());
                             dos.writeUTF(homePage.getUrl());
@@ -51,8 +55,8 @@ public class DataStreamSerializer implements Serialization {
                             dos.writeInt(periodsLength);
                             for (int j = 0; j < periodsLength; j++) {
                                 Organization.Period period = org.getPeriod(j);
-                                dos.writeUTF(period.getStartDate().toString());
-                                dos.writeUTF(period.getEndDate().toString());
+                                dos.writeUTF(String.valueOf(period.getStartDate()));
+                                dos.writeUTF(String.valueOf(period.getEndDate()));
                                 dos.writeUTF(period.getPosition());
                                 dos.writeUTF(period.getDescription());
                             }
@@ -77,28 +81,26 @@ public class DataStreamSerializer implements Serialization {
             int sizeSections = dis.readInt();
             for (int i = 0; i < sizeSections; i++) {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                Section section;
-                int countPoint;
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        section = new TextSection(dis.readUTF());
-                        resume.setSection(sectionType, section);
+                        TextSection textSection = new TextSection(dis.readUTF());
+                        resume.setSection(sectionType, textSection);
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        section = new ListSection();
-                        countPoint = dis.readInt();
+                        ListSection listSection = new ListSection();
+                        int countPoint = dis.readInt();
                         for (int j = 0; j < countPoint; j++) {
-                            section.addContent(dis.readUTF());
+                            listSection.addContent(dis.readUTF());
                         }
-                        resume.setSection(sectionType, section);
+                        resume.setSection(sectionType, listSection);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        section = new OrganizationSection();
-                        countPoint = dis.readInt();
-                        for (int j = 0; j < countPoint; j++) {
+                        OrganizationSection organizationSection = new OrganizationSection();
+                        int orgSize = dis.readInt();
+                        for (int j = 0; j < orgSize; j++) {
                             Organization organization = new Organization(dis.readUTF(), dis.readUTF());
                             int periodsLength = dis.readInt();
                             for (int k = 0; k < periodsLength; k++) {
@@ -110,9 +112,9 @@ public class DataStreamSerializer implements Serialization {
                                 );
                                 organization.addPeriod(period);
                             }
-                            section.addContent(organization);
+                            organizationSection.addContent(organization);
                         }
-                        resume.setSection(sectionType, section);
+                        resume.setSection(sectionType, organizationSection);
                         break;
                 }
             }
