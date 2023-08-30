@@ -15,6 +15,7 @@ public class ResumeTestData {
         resume.setContacts(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.setContacts(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
+
         // позиция
         Section<String> sectionPosition = new TextSection("Ведущий стажировок и ...");
         resume.setSection(SectionType.OBJECTIVE, sectionPosition);
@@ -47,104 +48,87 @@ public class ResumeTestData {
         Section<Organization> sectionExp = new OrganizationSection();
 
         // Java Ops Project
-        Organization jopOrg = new Organization("Java Ops Projects", "http://javaops.ru/");
-
-        Period authorPeriod = new Period(
+        Organization.Period authorPeriod = new Organization.Period(
                 LocalDate.parse("2013-10-01")
                 , "Автор проекта."
                 , "Создание, организация и проведение Java онлайн проектов и стажировок."
         );
 
-        jopOrg.addPeriod(authorPeriod);
+        // Java Ops Project
+        Organization jopOrg = new Organization("Java Ops Projects", "http://javaops.ru/", authorPeriod);
 
         sectionExp.addContent(jopOrg);
 
         // Wrike
-        Organization wrikeOrg = new Organization("Wrike", "https://www.wrike.com/");
-
-        Period seniorDeveloperPeriod = new Period(
+        Organization.Period seniorDeveloperPeriod = new Organization.Period(
                 LocalDate.parse("2014-10-01")
                 , LocalDate.parse("2016-01-01")
                 , "Старший разработчик (backend)"
                 , "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."
         );
 
-        wrikeOrg.addPeriod(seniorDeveloperPeriod);
+        Organization wrikeOrg = new Organization("Wrike", "https://www.wrike.com/", seniorDeveloperPeriod);
 
         sectionExp.addContent(wrikeOrg);
 
-
         // RIT Center
-        Organization ritCenter = new Organization("RIT Center");
-
-        Period architect = new Period(
+        Organization.Period architect = new Organization.Period(
                 LocalDate.parse("2012-04-01")
                 , LocalDate.parse("2014-10-01")
                 , "Java архитектор"
                 , "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."
         );
 
-        ritCenter.addPeriod(architect);
+        Organization ritCenter = new Organization("RIT Center", architect);
 
         sectionExp.addContent(ritCenter);
 
         resume.setSection(SectionType.EXPERIENCE, sectionExp);
 
-
         // Образование
         Section<Organization> sectionEdu = new OrganizationSection();
 
         // Coursera
-        Organization coursera = new Organization("Coursera", "https://www.coursera.org/course/progfun");
-
-        Period courseraPeriod = new Period(
+        Organization.Period courseraPeriod = new Organization.Period(
                 LocalDate.parse("2013-03-01")
                 , LocalDate.parse("2013-05-01")
                 , "Functional Programming Principles"
         );
 
-        coursera.addPeriod(courseraPeriod);
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/course/progfun", courseraPeriod);
 
         sectionEdu.addContent(coursera);
 
 
         // Alcatel
-        Organization alcatel = new Organization("Alcatel", "http://www.alcatel.ru/");
-
-        Period studyTelephone = new Period(
-                LocalDate.parse("1997-09-01")
+        Organization alcatel = new Organization("Alcatel"
+                , "http://www.alcatel.ru/"
+                , new Organization.Period(LocalDate.parse("1997-09-01")
                 , LocalDate.parse("1998-03-01")
-                , "6 месяцев обучения цифровым телефонным сетям (Москва)"
-        );
-
-        alcatel.addPeriod(studyTelephone);
+                , "6 месяцев обучения цифровым телефонным сетям (Москва)"));
 
         sectionEdu.addContent(alcatel);
 
         // SPB
-        Organization itmo = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/");
-
-        Period graduate = new Period(
+        Organization itmo = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики"
+                , "http://www.ifmo.ru/"
+                , new Organization.Period(
                 LocalDate.parse("1993-09-01")
                 , LocalDate.parse("1996-07-01")
                 , "Аспирантура"
-                , "(программист С, С++)"
-        );
-
-        Period engineer = new Period(
+                , "(программист С, С++)")
+                , new Organization.Period(
                 LocalDate.parse("1987-09-01")
                 , LocalDate.parse("1993-07-01")
                 , "Инженер"
-                , "(программист Fortran, C)"
-        );
-
-        itmo.addPeriod(graduate);
-        itmo.addPeriod(engineer);
+                , "(программист Fortran, C)"));
 
         sectionEdu.addContent(itmo);
 
         resume.setSection(SectionType.EDUCATION, sectionEdu);
+
     }
+
     public static void main(String[] args) {
         Resume resume = new Resume("Григорий Кислин");
 
@@ -197,100 +181,80 @@ public class ResumeTestData {
         // Опыт работы
         Section<Organization> sectionExp = new OrganizationSection();
 
-        // Java Ops Project
-        Organization jopOrg = new Organization("Java Ops Projects", "http://javaops.ru/");
-
-        Period authorPeriod = new Period(
+        Organization.Period authorPeriod = new Organization.Period(
                 LocalDate.parse("2013-10-01")
                 , "Автор проекта."
                 , "Создание, организация и проведение Java онлайн проектов и стажировок."
         );
 
-        jopOrg.addPeriod(authorPeriod);
+        // Java Ops Project
+        Organization jopOrg = new Organization("Java Ops Projects", "http://javaops.ru/", authorPeriod);
 
         sectionExp.addContent(jopOrg);
 
         // Wrike
-        Organization wrikeOrg = new Organization("Wrike", "https://www.wrike.com/");
-
-        Period seniorDeveloperPeriod = new Period(
+        Organization.Period seniorDeveloperPeriod = new Organization.Period(
                 LocalDate.parse("2014-10-01")
                 , LocalDate.parse("2016-01-01")
                 , "Старший разработчик (backend)"
                 , "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."
         );
 
-        wrikeOrg.addPeriod(seniorDeveloperPeriod);
+        Organization wrikeOrg = new Organization("Wrike", "https://www.wrike.com/", seniorDeveloperPeriod);
 
         sectionExp.addContent(wrikeOrg);
 
-
         // RIT Center
-        Organization ritCenter = new Organization("RIT Center");
-
-        Period architect = new Period(
+        Organization.Period architect = new Organization.Period(
                 LocalDate.parse("2012-04-01")
                 , LocalDate.parse("2014-10-01")
                 , "Java архитектор"
                 , "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."
         );
 
-        ritCenter.addPeriod(architect);
+        Organization ritCenter = new Organization("RIT Center", architect);
 
         sectionExp.addContent(ritCenter);
 
         resume.setSection(SectionType.EXPERIENCE, sectionExp);
 
-
         // Образование
         Section<Organization> sectionEdu = new OrganizationSection();
 
         // Coursera
-        Organization coursera = new Organization("Coursera", "https://www.coursera.org/course/progfun");
-
-        Period courseraPeriod = new Period(
+        Organization.Period courseraPeriod = new Organization.Period(
                 LocalDate.parse("2013-03-01")
                 , LocalDate.parse("2013-05-01")
                 , "Functional Programming Principles"
         );
 
-        coursera.addPeriod(courseraPeriod);
+        Organization coursera = new Organization("Coursera", "https://www.coursera.org/course/progfun", courseraPeriod);
 
         sectionEdu.addContent(coursera);
 
 
         // Alcatel
-        Organization alcatel = new Organization("Alcatel", "http://www.alcatel.ru/");
-
-        Period studyTelephone = new Period(
-                LocalDate.parse("1997-09-01")
+        Organization alcatel = new Organization("Alcatel"
+                , "http://www.alcatel.ru/"
+                , new Organization.Period(LocalDate.parse("1997-09-01")
                 , LocalDate.parse("1998-03-01")
-                , "6 месяцев обучения цифровым телефонным сетям (Москва)"
-        );
-
-        alcatel.addPeriod(studyTelephone);
+                , "6 месяцев обучения цифровым телефонным сетям (Москва)"));
 
         sectionEdu.addContent(alcatel);
 
         // SPB
-        Organization itmo = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/");
-
-        Period graduate = new Period(
+        Organization itmo = new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики"
+                , "http://www.ifmo.ru/"
+                , new Organization.Period(
                 LocalDate.parse("1993-09-01")
                 , LocalDate.parse("1996-07-01")
                 , "Аспирантура"
-                , "(программист С, С++)"
-        );
-
-        Period engineer = new Period(
+                , "(программист С, С++)")
+                , new Organization.Period(
                 LocalDate.parse("1987-09-01")
                 , LocalDate.parse("1993-07-01")
                 , "Инженер"
-                , "(программист Fortran, C)"
-        );
-
-        itmo.addPeriod(graduate);
-        itmo.addPeriod(engineer);
+                , "(программист Fortran, C)"));
 
         sectionEdu.addContent(itmo);
 
